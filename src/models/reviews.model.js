@@ -1,24 +1,23 @@
 import mongoose from "mongoose";
 
-
-const orderItemSchema = new mongoose.Schema({
-    order_id: {
+const reviewSchema = new mongoose.Schema({
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order',
+        ref: 'User',
         required: true
+
     },
     product_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'products',
         required: true
     },
-    quantity: {
+    rating: {
         type: Number,
-        required: true,
-        min: 1
+        required: true
     },
-    unit_price: {
-        type: Number,
+    comment: {
+        type: String,
         required: true
     },
     createdAt: {
@@ -29,6 +28,6 @@ const orderItemSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-});
+})
 
-export const OrderItem = mongoose.model("OrderItem", orderItemSchema);
+export const Reviews = new mongoose.model("Reviews", reviewSchema)

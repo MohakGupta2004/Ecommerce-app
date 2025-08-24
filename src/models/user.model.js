@@ -1,6 +1,6 @@
-import mongoose, { mongo } from "mongoose"
-
-const userSchema = {
+import mongoose from "mongoose"
+import bcrypt from "bcrypt"
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true
@@ -26,6 +26,22 @@ const userSchema = {
     type: Date,
     default: Date.now
   }
-}
+})
 
-export const User = new mongoose.Schema(userSchema, "User");
+userSchema.pre('save', async function save(next) {
+  if (!this.isModified('password')) return next();
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
+userSchema.methods.validatePassword = async function validatePassword(password) {
+  return bcrypt.compare(password, this.password);
+};
+
+
+export const User = new mongoose.model("User", userSchema);
