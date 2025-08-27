@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import jwt from 'jsonwebtoken'
 import bcrypt from "bcrypt"
 const userSchema = new mongoose.Schema({
   username: {
@@ -13,6 +14,9 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  refreshToken: {
+    type: String,
   },
   role: {
     type: String,
@@ -42,6 +46,26 @@ userSchema.pre('save', async function save(next) {
 userSchema.methods.validatePassword = async function validatePassword(password) {
   return bcrypt.compare(password, this.password);
 };
+
+userSchema.methods.generateAccessToken = function generateAccessToken(){
+  const token = jwt.sign(
+        { username: this.username },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' })
+  return token;
+}
+
+userSchema.methods.generateRefreshToken = async function generateRefreshToken(){
+  const token = jwt.sign(
+        { username: this.username },
+        process.env.REFRESH_SECRET,
+        { expiresIn: '10d' });
+  this.refreshToken=token
+  await this.save()
+  return token;
+}
+
+
 
 
 export const User = new mongoose.model("User", userSchema);
