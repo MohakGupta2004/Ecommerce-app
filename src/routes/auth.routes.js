@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { loginController, refreshTokenController, registerController } from "../controllers/auth.controller.js";
+import { loginController, logoutController, refreshTokenController, registerController } from "../controllers/auth.controller.js";
 import { body } from "express-validator";
+import {isLoggedIn} from "../middleware/isloggedin.middleware.js";
 const router = Router()
 
 router.route("/register")
@@ -15,5 +16,6 @@ router.route("/login").post(
     loginController)
 
 router.route("/refresh").get(refreshTokenController)
+router.route("/logout").post(isLoggedIn, logoutController)
 
 export default router

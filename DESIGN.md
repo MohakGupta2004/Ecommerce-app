@@ -1,11 +1,16 @@
 # 📦 Routes for Ecommerce Application
 
-## **Auth & Users**
+## **Auth**
 
 ```http
 POST   /auth/register        # register user (customer/seller/admin)
 POST   /auth/login           # login
 POST   /auth/logout          # logout (invalidate token)
+```
+
+---
+## **Users**
+```
 GET    /users                # [admin] list users
 GET    /users/:id            # get user profile
 PUT    /users/:id            # update user info (self or admin)

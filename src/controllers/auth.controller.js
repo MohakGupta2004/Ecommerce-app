@@ -24,7 +24,7 @@ export const registerController = asyncHandler(async (req, res) => {
         email,
         password,
         refreshToken: "",
-        role: "customer"
+        role: 'customer'
     })
 
     const accessToken = await user.generateAccessToken();
@@ -82,4 +82,28 @@ export const refreshTokenController = asyncHandler(async (req, res) => {
     res.cookie("accessToken", token)
     res.cookie("refreshToken", newrefreshToken)
     res.json(new ApiResponse(200, "New token generated"))
+})
+
+
+export const logoutController = asyncHandler(async(req,res)=>{ 
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        throw new ApiError(401, "Refresh token not found, login again")
+    }
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET)
+    if (!decoded) {
+        throw new ApiError(403, "Invalid refresh token")
+    }
+
+    const user = await User.findOne({ username: decoded.username })
+    if (!user) {
+        throw new ApiError(403, "Unauthorized")
+    }
+
+    user.refreshToken = "";
+    await user.save();
+
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.json(new ApiResponse(200, "Logged out successfully"))
 })

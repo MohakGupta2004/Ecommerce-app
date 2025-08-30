@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { User } from "../models/user.model.js"
 
-export const isLoggedIn=asyncHandler(async(req,res,next)=>{
+export const isAdmin=asyncHandler(async(req,res,next)=>{
     const accessToken=req.cookies.accessToken
     if(!accessToken){
         throw new ApiError(401,"not authorized")
@@ -13,9 +13,12 @@ export const isLoggedIn=asyncHandler(async(req,res,next)=>{
         throw new ApiError(401,"not authorized")
     }
     const existingUser=await User.findOne({
-        username: decoded.username
+        username:decoded.username
     })
     console.log(existingUser)
+    if(existingUser.role != 'admin'){
+        throw new ApiError(401,"not authorized")
+    }
     req.userId=existingUser._id
     next()
 })

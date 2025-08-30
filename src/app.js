@@ -1,6 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes.js'
+import userRouter from './routes/user.routes.js'
 import { ApiResponse } from './utils/ApiResponse.js';
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(express.urlencoded({
 
 //routes
 app.use("/api/v1/auth", authRouter)
-
+app.use("/api/v1/user", userRouter)
 
 app.get("/healthcheck", (req, res) => {
   return res.json(new ApiResponse(200, "server running"))
