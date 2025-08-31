@@ -47,7 +47,7 @@ export const loginController = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user doesn't exist")
     }
-    const isPassWordValid = user.validatePassword(password)
+    const isPassWordValid = await user.validatePassword(password)
     if (!isPassWordValid) {
         throw new ApiError(401, "please enter a valid password")
     }
