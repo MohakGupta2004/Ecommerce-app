@@ -1,10 +1,5 @@
 import connectDB from './db/database.js';
-import dotenv from 'dotenv'
 import app from './app.js';
-
-//env variable setup
-dotenv.config()
-
 //Database connection
 const DB_URL = process.env.MONGO_URL
 
